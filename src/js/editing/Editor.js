@@ -189,6 +189,29 @@ define([
       }
     };
 
+    this.setHtmlDialog = function ($editable, fnShowDialog) {
+      var rng = range.create();
+      var self = this;
+			// var selected = rng.nodes(function(n) {
+			// 	return true;
+			// });
+			// selected = selected.length ? selected[0].innerHTML : ""
+			// // console.log("selected", selected, selected)
+      fnShowDialog({
+        text: ""
+      }, function (sHtml) {
+        rng.select();
+				console.log('sHtml', sHtml)
+        self.insertHTML($editable, sHtml);
+      });
+    };
+
+		this.insertHTML = function ($editable, sHtml) {
+      recordUndo($editable);
+			var $node = $(sHtml);
+			console.log("$node", $node)
+			range.create().insertNode($node[0]);
+		};
     /**
      * formatBlock
      *

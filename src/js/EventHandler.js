@@ -252,6 +252,11 @@ define([
           editor.setVideoDialog($editable, function (linkInfo, cb) {
             dialog.showVideoDialog($editable, $dialog, linkInfo, cb);
           });
+        } else if (sEvent === 'showHtmlDialog') {
+          $editable.focus();
+          editor.setHtmlDialog($editable, function (linkInfo, cb) {
+            dialog.showHtmlDialog($editable, $dialog, linkInfo, cb);
+          });
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog($editable, $dialog);
         } else if (sEvent === 'fullscreen') {

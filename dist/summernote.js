@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-23T06:42Z
+ * Date: 2014-02-24T15:43Z
  */
 (function (factory) {
   /* global define */
@@ -699,6 +699,11 @@
           url: 'Video URL?',
           providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
         },
+				html: {
+					html: 'HTML',
+					source: 'HTML Code',
+					insert: "Insert HTML"
+				},
         table: {
           table: 'Table'
         },
@@ -1446,6 +1451,29 @@
       }
     };
 
+    this.setHtmlDialog = function ($editable, fnShowDialog) {
+      var rng = range.create();
+      var self = this;
+			// var selected = rng.nodes(function(n) {
+			// 	return true;
+			// });
+			// selected = selected.length ? selected[0].innerHTML : ""
+			// // console.log("selected", selected, selected)
+      fnShowDialog({
+        text: ""
+      }, function (sHtml) {
+        rng.select();
+				console.log('sHtml', sHtml)
+        self.insertHTML($editable, sHtml);
+      });
+    };
+
+		this.insertHTML = function ($editable, sHtml) {
+      recordUndo($editable);
+			var $node = $(sHtml);
+			console.log("$node", $node)
+			range.create().insertNode($node[0]);
+		};
     /**
      * formatBlock
      *
@@ -2025,6 +2053,32 @@
       }).modal('show');
     };
 
+    this.showHtmlDialog = function ($editable, $dialog, htmlInfo, callback) {
+				console.log('showHtmlDialog', htmlInfo)
+      var $htmlDialog = $dialog.find('.note-html-dialog');
+      var $htmlSrc = $htmlDialog.find('.note-html-src'),
+          $htmlBtn = $htmlDialog.find('.note-html-btn');
+
+      $htmlDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
+        $htmlSrc.val(htmlInfo.text).keyup(function () {
+          toggleBtn($htmlBtn, $htmlSrc.val());
+        }).trigger('keyup').trigger('focus');
+
+        $htmlBtn.click(function (event) {
+          $htmlDialog.modal('hide');
+          callback($htmlSrc.val());
+          event.preventDefault();
+        });
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+        $editable.focus();
+        $htmlSrc.off('keyup');
+        $htmlBtn.off('click');
+      }).modal('show');
+    };
+
     /**
      * Show link dialog and set event handlers on dialog controls.
      *
@@ -2330,6 +2384,11 @@
           $editable.focus();
           editor.setVideoDialog($editable, function (linkInfo, cb) {
             dialog.showVideoDialog($editable, $dialog, linkInfo, cb);
+          });
+        } else if (sEvent === 'showHtmlDialog') {
+          $editable.focus();
+          editor.setHtmlDialog($editable, function (linkInfo, cb) {
+            dialog.showHtmlDialog($editable, $dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog($editable, $dialog);
@@ -2637,6 +2696,9 @@
       video: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.video.video + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>';
       },
+			html: function(lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.html.html + '" data-event="showHtmlDialog" tabindex="-1"><i class="fa fa-code icon-play"></i></button>';
+			},
       table: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.table.table + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-table icon-table"></i> <span class="caret"></span></button>' +
                  '<ul class="dropdown-menu">' +
@@ -3003,6 +3065,31 @@
                '</div>';
       };
 
+			var tplHtmlDialog = function() {
+        return '<div class="note-html-dialog modal" aria-hidden="false">' +
+                 '<div class="modal-dialog">' +
+                   '<div class="modal-content">' +
+                     '<div class="modal-header">' +
+                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
+                       '<h4>' + lang.html.insert + '</h4>' +
+                     '</div>' +
+                     '<div class="modal-body">' +
+                       '<div class="row-fluid">' +
+
+                       '<div class="form-group">' +
+                         '<label>' + lang.html.source + '</label>' +
+                         '<textarea class="note-html-src form-control span12"></textarea>' +
+                       '</div>' +
+                       '</div>' +
+                     '</div>' +
+                     '<div class="modal-footer">' +
+                       '<button href="#" class="btn btn-primary note-html-btn disabled" disabled="disabled">' + lang.html.insert + '</button>' +
+                     '</div>' +
+                   '</div>' +
+                 '</div>' +
+               '</div>';
+			};
+
       var tplHelpDialog = function () {
         return '<div class="note-help-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
@@ -3022,6 +3109,7 @@
                tplImageDialog() +
                tplLinkDialog() +
                tplVideoDialog() +
+               tplHtmlDialog() +
                tplHelpDialog() +
              '</div>';
     };

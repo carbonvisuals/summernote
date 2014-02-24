@@ -93,6 +93,32 @@ define('module/Dialog', function () {
       }).modal('show');
     };
 
+    this.showHtmlDialog = function ($editable, $dialog, htmlInfo, callback) {
+				console.log('showHtmlDialog', htmlInfo)
+      var $htmlDialog = $dialog.find('.note-html-dialog');
+      var $htmlSrc = $htmlDialog.find('.note-html-src'),
+          $htmlBtn = $htmlDialog.find('.note-html-btn');
+
+      $htmlDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
+        $htmlSrc.val(htmlInfo.text).keyup(function () {
+          toggleBtn($htmlBtn, $htmlSrc.val());
+        }).trigger('keyup').trigger('focus');
+
+        $htmlBtn.click(function (event) {
+          $htmlDialog.modal('hide');
+          callback($htmlSrc.val());
+          event.preventDefault();
+        });
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+        $editable.focus();
+        $htmlSrc.off('keyup');
+        $htmlBtn.off('click');
+      }).modal('show');
+    };
+
     /**
      * Show link dialog and set event handlers on dialog controls.
      *

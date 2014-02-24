@@ -94,6 +94,11 @@ define('settings', function () {
           url: 'Video URL?',
           providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
         },
+				html: {
+					html: 'HTML',
+					source: 'HTML Code',
+					insert: "Insert HTML"
+				},
         table: {
           table: 'Table'
         },

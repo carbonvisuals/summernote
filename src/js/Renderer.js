@@ -20,6 +20,9 @@ define([
       video: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.video.video + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>';
       },
+			html: function(lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.html.html + '" data-event="showHtmlDialog" tabindex="-1"><i class="fa fa-code icon-play"></i></button>';
+			},
       table: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.table.table + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-table icon-table"></i> <span class="caret"></span></button>' +
                  '<ul class="dropdown-menu">' +
@@ -386,6 +389,31 @@ define([
                '</div>';
       };
 
+			var tplHtmlDialog = function() {
+        return '<div class="note-html-dialog modal" aria-hidden="false">' +
+                 '<div class="modal-dialog">' +
+                   '<div class="modal-content">' +
+                     '<div class="modal-header">' +
+                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
+                       '<h4>' + lang.html.insert + '</h4>' +
+                     '</div>' +
+                     '<div class="modal-body">' +
+                       '<div class="row-fluid">' +
+
+                       '<div class="form-group">' +
+                         '<label>' + lang.html.source + '</label>' +
+                         '<textarea class="note-html-src form-control span12"></textarea>' +
+                       '</div>' +
+                       '</div>' +
+                     '</div>' +
+                     '<div class="modal-footer">' +
+                       '<button href="#" class="btn btn-primary note-html-btn disabled" disabled="disabled">' + lang.html.insert + '</button>' +
+                     '</div>' +
+                   '</div>' +
+                 '</div>' +
+               '</div>';
+			};
+
       var tplHelpDialog = function () {
         return '<div class="note-help-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
@@ -405,6 +433,7 @@ define([
                tplImageDialog() +
                tplLinkDialog() +
                tplVideoDialog() +
+               tplHtmlDialog() +
                tplHelpDialog() +
              '</div>';
     };
