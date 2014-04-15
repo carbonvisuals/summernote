@@ -81,7 +81,7 @@ define([
     /* jshint ignore:end */
 
     /**
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} nTabsize
      */
@@ -97,7 +97,7 @@ define([
 
     /**
      * handle tab key
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {Number} nTabsize
      * @param {Boolean} bShift
      */
@@ -192,26 +192,43 @@ define([
     this.setHtmlDialog = function ($editable, fnShowDialog) {
       var rng = range.create();
       var self = this;
-			// var selected = rng.nodes(function(n) {
-			// 	return true;
-			// });
-			// selected = selected.length ? selected[0].innerHTML : ""
-			// // console.log("selected", selected, selected)
+      // var selected = rng.nodes(function(n) {
+      //  return true;
+      // });
+      // selected = selected.length ? selected[0].innerHTML : ""
+      // // console.log("selected", selected, selected)
       fnShowDialog({
-        text: ""
+        text: ''
       }, function (sHtml) {
         rng.select();
-				console.log('sHtml', sHtml)
+        console.log('sHtml', sHtml);
         self.insertHTML($editable, sHtml);
       });
     };
+    this.setVisualisationDialog = function ($editable, fnShowDialog) {
+      var rng = range.create();
+      var self = this;
+      // var selected = rng.nodes(function(n) {
+      //  return true;
+      // });
+      // selected = selected.length ? selected[0].innerHTML : ""
+      // // console.log("selected", selected, selected)
+      fnShowDialog({
+        text: ''
+      }, function (code) {
+        rng.select();
+        console.log('code', code);
+        var iframe = '<iframe src="/widget/' + code + '" frameborder="0" scrolling="no" style="width: 100%; height: 308px;"></iframe>';
+        self.insertHTML($editable, iframe);
+      });
+    };
 
-		this.insertHTML = function ($editable, sHtml) {
+    this.insertHTML = function ($editable, sHtml) {
       recordUndo($editable);
-			var $node = $(sHtml);
-			console.log("$node", $node)
-			range.create().insertNode($node[0]);
-		};
+      var $node = $(sHtml);
+      console.log('$node', $node);
+      range.create().insertNode($node[0]);
+    };
     /**
      * formatBlock
      *

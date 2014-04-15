@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-24T15:43Z
+ * Date: 2014-04-15T15:38Z
  */
 (function (factory) {
   /* global define */
@@ -702,8 +702,13 @@
 				html: {
 					html: 'HTML',
 					source: 'HTML Code',
-					insert: "Insert HTML"
+					insert: 'Insert HTML'
 				},
+        visualisation: {
+          visualisation: 'Visualisation',
+          code: 'Visualisation code',
+          insert: 'Insert visualisation'
+        },
         table: {
           table: 'Table'
         },
@@ -1343,7 +1348,7 @@
     /* jshint ignore:end */
 
     /**
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} nTabsize
      */
@@ -1359,7 +1364,7 @@
 
     /**
      * handle tab key
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {Number} nTabsize
      * @param {Boolean} bShift
      */
@@ -1454,26 +1459,43 @@
     this.setHtmlDialog = function ($editable, fnShowDialog) {
       var rng = range.create();
       var self = this;
-			// var selected = rng.nodes(function(n) {
-			// 	return true;
-			// });
-			// selected = selected.length ? selected[0].innerHTML : ""
-			// // console.log("selected", selected, selected)
+      // var selected = rng.nodes(function(n) {
+      //  return true;
+      // });
+      // selected = selected.length ? selected[0].innerHTML : ""
+      // // console.log("selected", selected, selected)
       fnShowDialog({
-        text: ""
+        text: ''
       }, function (sHtml) {
         rng.select();
-				console.log('sHtml', sHtml)
+        console.log('sHtml', sHtml);
         self.insertHTML($editable, sHtml);
       });
     };
+    this.setVisualisationDialog = function ($editable, fnShowDialog) {
+      var rng = range.create();
+      var self = this;
+      // var selected = rng.nodes(function(n) {
+      //  return true;
+      // });
+      // selected = selected.length ? selected[0].innerHTML : ""
+      // // console.log("selected", selected, selected)
+      fnShowDialog({
+        text: ''
+      }, function (code) {
+        rng.select();
+        console.log('code', code);
+        var iframe = '<iframe src="/widget/' + code + '" frameborder="0" scrolling="no" style="width: 100%; height: 308px;"></iframe>';
+        self.insertHTML($editable, iframe);
+      });
+    };
 
-		this.insertHTML = function ($editable, sHtml) {
+    this.insertHTML = function ($editable, sHtml) {
       recordUndo($editable);
-			var $node = $(sHtml);
-			console.log("$node", $node)
-			range.create().insertNode($node[0]);
-		};
+      var $node = $(sHtml);
+      console.log('$node', $node);
+      range.create().insertNode($node[0]);
+    };
     /**
      * formatBlock
      *
@@ -1960,7 +1982,7 @@
   };
 
   /**
-   * Dialog 
+   * Dialog
    *
    * @class
    */
@@ -1984,8 +2006,8 @@
      * show image dialog
      *
      * @param {jQuery} $dialog
-     * @param {Function} fnInsertImages 
-     * @param {Function} fnInsertImage 
+     * @param {Function} fnInsertImages
+     * @param {Function} fnInsertImage
      */
     this.showImageDialog = function ($editable, $dialog, fnInsertImages, fnInsertImage) {
       var $imageDialog = $dialog.find('.note-image-dialog');
@@ -2024,9 +2046,9 @@
     /**
      * Show video dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
-     * @param {Function} callback 
+     * @param {jQuery} $dialog
+     * @param {Object} videoInfo
+     * @param {Function} callback
      */
     this.showVideoDialog = function ($editable, $dialog, videoInfo, callback) {
       var $videoDialog = $dialog.find('.note-video-dialog');
@@ -2054,7 +2076,6 @@
     };
 
     this.showHtmlDialog = function ($editable, $dialog, htmlInfo, callback) {
-				console.log('showHtmlDialog', htmlInfo)
       var $htmlDialog = $dialog.find('.note-html-dialog');
       var $htmlSrc = $htmlDialog.find('.note-html-src'),
           $htmlBtn = $htmlDialog.find('.note-html-btn');
@@ -2076,6 +2097,31 @@
         $editable.focus();
         $htmlSrc.off('keyup');
         $htmlBtn.off('click');
+      }).modal('show');
+    };
+
+    this.showVisualisationDialog = function ($editable, $dialog, visualisationInfo, callback) {
+      var $visDialog = $dialog.find('.note-visualisation-dialog');
+      var $visCode = $visDialog.find('.note-visualisation-code'),
+          $visBtn = $visDialog.find('.note-visualisation-btn');
+
+      $visDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
+        $visCode.val(visualisationInfo.text).keyup(function () {
+          toggleBtn($visBtn, $visCode.val());
+        }).trigger('keyup').trigger('focus');
+
+        $visBtn.click(function (event) {
+          $visDialog.modal('hide');
+          callback($visCode.val());
+          event.preventDefault();
+        });
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+        $editable.focus();
+        $visCode.off('keyup');
+        $visBtn.off('click');
       }).modal('show');
     };
 
@@ -2304,7 +2350,7 @@
             scrollTop = $(document).scrollTop();
 
         $editor.on('mousemove', function (event) {
-          
+
           editor.resizeTo({
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
@@ -2389,6 +2435,11 @@
           $editable.focus();
           editor.setHtmlDialog($editable, function (linkInfo, cb) {
             dialog.showHtmlDialog($editable, $dialog, linkInfo, cb);
+          });
+        } else if (sEvent === 'showVisualisationDialog') {
+          $editable.focus();
+          editor.setVisualisationDialog($editable, function (linkInfo, cb) {
+            dialog.showVisualisationDialog($editable, $dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog($editable, $dialog);
@@ -2699,6 +2750,9 @@
 			html: function(lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.html.html + '" data-event="showHtmlDialog" tabindex="-1"><i class="fa fa-code icon-play"></i></button>';
 			},
+      visualisation: function(lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small btn-visualisation" title="' + lang.visualisation.visualisation + '" data-event="showVisualisationDialog" tabindex="-1"><i class="fa visualisation"></i></button>';
+      },
       table: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.table.table + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-table icon-table"></i> <span class="caret"></span></button>' +
                  '<ul class="dropdown-menu">' +
@@ -3090,6 +3144,31 @@
                '</div>';
 			};
 
+      var tplVisualisationDialog = function() {
+        return '<div class="note-visualisation-dialog modal" aria-hidden="false">' +
+                 '<div class="modal-dialog">' +
+                   '<div class="modal-content">' +
+                     '<div class="modal-header">' +
+                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
+                       '<h4>' + lang.visualisation.insert + '</h4>' +
+                     '</div>' +
+                     '<div class="modal-body">' +
+                       '<div class="row-fluid">' +
+
+                       '<div class="form-group">' +
+                         '<label>' + lang.visualisation.code + '</label>' +
+                         '<input class="note-visualisation-code form-control span12" type="text" />' +
+                       '</div>' +
+                       '</div>' +
+                     '</div>' +
+                     '<div class="modal-footer">' +
+                       '<button href="#" class="btn btn-primary note-visualisation-btn disabled" disabled="disabled">' + lang.visualisation.insert + '</button>' +
+                     '</div>' +
+                   '</div>' +
+                 '</div>' +
+               '</div>';
+      };
+
       var tplHelpDialog = function () {
         return '<div class="note-help-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
@@ -3110,6 +3189,7 @@
                tplLinkDialog() +
                tplVideoDialog() +
                tplHtmlDialog() +
+               tplVisualisationDialog() +
                tplHelpDialog() +
              '</div>';
     };

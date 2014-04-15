@@ -97,8 +97,13 @@ define('settings', function () {
 				html: {
 					html: 'HTML',
 					source: 'HTML Code',
-					insert: "Insert HTML"
+					insert: 'Insert HTML'
 				},
+        visualisation: {
+          visualisation: 'Visualisation',
+          code: 'Visualisation code',
+          insert: 'Insert visualisation'
+        },
         table: {
           table: 'Table'
         },

@@ -1,6 +1,6 @@
 define('module/Dialog', function () {
   /**
-   * Dialog 
+   * Dialog
    *
    * @class
    */
@@ -24,8 +24,8 @@ define('module/Dialog', function () {
      * show image dialog
      *
      * @param {jQuery} $dialog
-     * @param {Function} fnInsertImages 
-     * @param {Function} fnInsertImage 
+     * @param {Function} fnInsertImages
+     * @param {Function} fnInsertImage
      */
     this.showImageDialog = function ($editable, $dialog, fnInsertImages, fnInsertImage) {
       var $imageDialog = $dialog.find('.note-image-dialog');
@@ -64,9 +64,9 @@ define('module/Dialog', function () {
     /**
      * Show video dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
-     * @param {Function} callback 
+     * @param {jQuery} $dialog
+     * @param {Object} videoInfo
+     * @param {Function} callback
      */
     this.showVideoDialog = function ($editable, $dialog, videoInfo, callback) {
       var $videoDialog = $dialog.find('.note-video-dialog');
@@ -94,7 +94,6 @@ define('module/Dialog', function () {
     };
 
     this.showHtmlDialog = function ($editable, $dialog, htmlInfo, callback) {
-				console.log('showHtmlDialog', htmlInfo)
       var $htmlDialog = $dialog.find('.note-html-dialog');
       var $htmlSrc = $htmlDialog.find('.note-html-src'),
           $htmlBtn = $htmlDialog.find('.note-html-btn');
@@ -116,6 +115,31 @@ define('module/Dialog', function () {
         $editable.focus();
         $htmlSrc.off('keyup');
         $htmlBtn.off('click');
+      }).modal('show');
+    };
+
+    this.showVisualisationDialog = function ($editable, $dialog, visualisationInfo, callback) {
+      var $visDialog = $dialog.find('.note-visualisation-dialog');
+      var $visCode = $visDialog.find('.note-visualisation-code'),
+          $visBtn = $visDialog.find('.note-visualisation-btn');
+
+      $visDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
+        $visCode.val(visualisationInfo.text).keyup(function () {
+          toggleBtn($visBtn, $visCode.val());
+        }).trigger('keyup').trigger('focus');
+
+        $visBtn.click(function (event) {
+          $visDialog.modal('hide');
+          callback($visCode.val());
+          event.preventDefault();
+        });
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+        $editable.focus();
+        $visCode.off('keyup');
+        $visBtn.off('click');
       }).modal('show');
     };
 

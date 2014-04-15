@@ -27,6 +27,13 @@ require([
     // disableDragAndDrop: false, // disable drag and drop event
     codemirror: {                 // code mirror options
       theme: 'monokai'
-    }
+    },
+    toolbar: [
+      ['style', ['style']],
+      ['font', ['bold', 'italic', 'clear']],
+      ['para', ['ul', 'ol']],
+      ['insert', ['link', 'video', 'html', 'visualisation']]
+    ]
+
   });
 });

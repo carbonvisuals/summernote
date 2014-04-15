@@ -171,7 +171,7 @@ define([
             scrollTop = $(document).scrollTop();
 
         $editor.on('mousemove', function (event) {
-          
+
           editor.resizeTo({
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
@@ -256,6 +256,11 @@ define([
           $editable.focus();
           editor.setHtmlDialog($editable, function (linkInfo, cb) {
             dialog.showHtmlDialog($editable, $dialog, linkInfo, cb);
+          });
+        } else if (sEvent === 'showVisualisationDialog') {
+          $editable.focus();
+          editor.setVisualisationDialog($editable, function (linkInfo, cb) {
+            dialog.showVisualisationDialog($editable, $dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog($editable, $dialog);

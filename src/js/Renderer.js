@@ -23,6 +23,9 @@ define([
 			html: function(lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.html.html + '" data-event="showHtmlDialog" tabindex="-1"><i class="fa fa-code icon-play"></i></button>';
 			},
+      visualisation: function(lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small btn-visualisation" title="' + lang.visualisation.visualisation + '" data-event="showVisualisationDialog" tabindex="-1"><i class="fa visualisation"></i></button>';
+      },
       table: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.table.table + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-table icon-table"></i> <span class="caret"></span></button>' +
                  '<ul class="dropdown-menu">' +
@@ -414,6 +417,31 @@ define([
                '</div>';
 			};
 
+      var tplVisualisationDialog = function() {
+        return '<div class="note-visualisation-dialog modal" aria-hidden="false">' +
+                 '<div class="modal-dialog">' +
+                   '<div class="modal-content">' +
+                     '<div class="modal-header">' +
+                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
+                       '<h4>' + lang.visualisation.insert + '</h4>' +
+                     '</div>' +
+                     '<div class="modal-body">' +
+                       '<div class="row-fluid">' +
+
+                       '<div class="form-group">' +
+                         '<label>' + lang.visualisation.code + '</label>' +
+                         '<input class="note-visualisation-code form-control span12" type="text" />' +
+                       '</div>' +
+                       '</div>' +
+                     '</div>' +
+                     '<div class="modal-footer">' +
+                       '<button href="#" class="btn btn-primary note-visualisation-btn disabled" disabled="disabled">' + lang.visualisation.insert + '</button>' +
+                     '</div>' +
+                   '</div>' +
+                 '</div>' +
+               '</div>';
+      };
+
       var tplHelpDialog = function () {
         return '<div class="note-help-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
@@ -434,6 +462,7 @@ define([
                tplLinkDialog() +
                tplVideoDialog() +
                tplHtmlDialog() +
+               tplVisualisationDialog() +
                tplHelpDialog() +
              '</div>';
     };
