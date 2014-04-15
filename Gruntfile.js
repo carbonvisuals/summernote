@@ -76,10 +76,11 @@ module.exports = function (grunt) {
           port: 3000,
           livereload: true,
           middleware: function (connect, options) {
+            var base = options.base[0];
             return [
               require('connect-livereload')(), // livereload middleware
-              connect.static(options.base),    // serve static files
-              connect.directory(options.base)  // make empty directories browsable
+              connect.static(base),    // serve static files
+              connect.directory(base)  // make empty directories browsable
             ];
           },
           open: 'http://localhost:3000'
